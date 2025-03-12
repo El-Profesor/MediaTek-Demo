@@ -23,4 +23,4 @@
 
     <!-- MAIN -->
     <main>
-        <div class="container"> <!-- MAIN CONTAINER : START -->
+        <div class="main-content"> <!-- MAIN-CONTENT : START -->

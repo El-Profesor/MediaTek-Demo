@@ -12,7 +12,7 @@ body>main {
 
 header,
 footer {
-  background-color: #1c212c;
+  background-color: var(--pico-form-element-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,7 +24,7 @@ header {
   left: 0;
   width: 100%;
   height: 100px;
-  border-bottom: 1px solid #2a3140;
+  border-bottom: 1px solid var(--pico-form-element-border-color);
 }
 
 header>h1 {
@@ -41,7 +41,7 @@ main {
 footer {
   height: 50px;
   width: 100%;
-  border-top: 1px solid #2a3140;
+  border-top: 1px solid var(--pico-form-element-border-color);
   position: fixed;
   bottom: 0;
   left: 0;
@@ -58,7 +58,7 @@ aside {
   left: 0;
   width: 10%;
   min-height: calc(100vh - 100px);
-  background-color: #017fc0;
+  background-color: var(--pico-primary-background);
 }
 
 aside nav li {
@@ -69,11 +69,11 @@ aside nav li {
 aside nav li a {
   display: flex;
   align-items: end;
-  color: #fff;
+  color: white;
 }
 
 aside nav li a:hover {
-  color: #79c0ff;
+  color: var(--pico-primary-hover);
   text-decoration: none;
 }
 
@@ -81,8 +81,57 @@ aside nav li a i {
   padding-right: .25rem;
 }
 
-.container {
-  width: 80%;
-  margin-left: 5%;
+.main-content {
+  width: 95%;
+  margin: 0 2.5%;
   padding: 20px 0;
+}
+
+i[role=button] {
+  color: white;
+  padding: .25em;
+  border: none;
+}
+
+i[class=light-icon-float-left] {
+  background-color: var(--pico-color-azure-650);
+}
+
+i[class=light-icon-pencil] {
+  background-color: var(--pico-color-jade-650);
+}
+
+i[class=light-icon-trash] {
+  background-color: var(--pico-color-pink-650);
+}
+
+a:has(i[role=button]) {
+  text-decoration: none;
+  margin-left: .25em;
+}
+
+.form-container {
+  width: 75%;
+  margin: 0 auto;
+}
+
+.table-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table-top a[role=button] {
+  display: flex;
+  align-items: end;
+  padding: .25em;
+}
+
+.table-top a[role=button] i {
+  margin-right: .25em;
+}
+
+pre {
+  padding: 0.5em;
 }

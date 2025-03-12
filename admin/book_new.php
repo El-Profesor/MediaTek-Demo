@@ -1,6 +1,6 @@
 <?php
 
-include_once "admin_top.php";
+include_once "./partials/top.php";
 
 echo '<pre>';
 
@@ -8,4 +8,4 @@ var_dump($_GET);
 
 echo '</pre>';
 
-include_once "admin_bottom.php";
+include_once "./partials/bottom.php";
