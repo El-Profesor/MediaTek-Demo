@@ -1,4 +1,4 @@
-        </div> <!-- MAIN CONTAINER : END -->
+        </div> <!-- MAIN-CONTENT : END -->
     </main>
 
     <!-- FOOTER -->

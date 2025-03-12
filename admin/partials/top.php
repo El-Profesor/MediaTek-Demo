@@ -8,6 +8,8 @@
 
     <!-- Pico CSS stylesheet main file -->
     <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" rel="stylesheet">
+    <!-- Pico CSS stylesheet color utilities file -->
+    <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.colors.min.css" rel="stylesheet">
     <!-- Light Icons stylesheet main file -->
     <link href="https://unpkg.com/light-icons/dist/light-icon.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -23,7 +25,7 @@
             <nav>
                 <ul>
                     <li><a href="./" title="Page principale du dashboard "><i class="light-icon-dashboard"></i> Dashboard</a></li>
-                    <li><a href="#" title="Gestion des livres"><i class="light-icon-book"></i> Livres</a></li>
+                    <li><a href="./book_index.php" title="Gestion des livres"><i class="light-icon-book"></i> Livres</a></li>
                     <li><a href="#" title="Gestion des auteurs"><i class="light-icon-users"></i> Auteurs</a></li>
                     <li><a href="#" title="Gestion des catégories"><i class="light-icon-folders"></i> Catégories</a></li>
                     <li><a href="#" title="Gestion des technologies"><i class="light-icon-tools"></i> Technologies</a></li>
@@ -38,4 +40,4 @@
 
     <!-- MAIN -->
     <main>
-        <div class="container"> <!-- MAIN CONTAINER : START -->
+        <div class="main-content"> <!-- MAIN-CONTENT : START -->
