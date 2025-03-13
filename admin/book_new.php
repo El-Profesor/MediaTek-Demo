@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
         // OK
         $summary = $_GET['summary'];
         $summaryLen = strlen($summary);
-        if ($summary > 65535) { // Format check
+        if ($summaryLen > 65535) { // Format check
             // KO
             $errors[] = "Le champ 'Résumé' doit contenir au plus 65535 caractères.";
         }
@@ -54,22 +54,78 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
     } else { // KO
         $errors[] = "Le champ 'Année de publication' est obligatoire. Merci de saisir une valeur.";
     }
-
-    if (count($errors) !== 0) {
-        $errorMsg = "<ul>";
-        foreach ($errors as $error) {
-            $errorMsg .= "<li>$error</li>";
-        }
-        $errorMsg .= "</ul>";
-        echo $errorMsg;
-    } else {
-        echo '<pre>';
-        var_dump($_GET);
-        echo '</pre>';
-    }
 } else { // KO
-    // Traitement de l'erreur
+    // "405 - Method Not Allowed" error processing
     header('Location: ../405.php');
+    exit;
+}
+
+/**
+ * ******************** [2-A] Submitted form is valid ➔ Data sanitization and escaping
+ */
+
+if (count($errors) === 0) {
+    // Note: escaping (see below) is unecessary as we later use a prepared statement
+    $title = addslashes(htmlspecialchars($title, ENT_NOQUOTES | ENT_SUBSTITUTE));
+    // FIXME: Check if ISBN does not exists
+    $isbn = addslashes(htmlspecialchars($isbn, ENT_NOQUOTES | ENT_SUBSTITUTE));
+    $summary = addslashes(htmlspecialchars($summary, ENT_NOQUOTES | ENT_SUBSTITUTE));
+    $publicationYear = addslashes(htmlspecialchars($publicationYear, ENT_NOQUOTES | ENT_SUBSTITUTE));
+
+    $currentDateTime = new DateTime();
+    $createdAt = $updatedAt = $currentDateTime->format('Y-m-d H:i:s');
+
+    /**
+     * ******************** [3] Create the corresponding record in database
+     */
+    // FIXME: Export sensitive data elsewhere
+    $host = 'localhost';
+    $dbName = 'mediatek';
+    $user = 'mentor'; // Your MySQL user username
+    $pass = 'superMentor'; // Your MySQL user password
+
+    $connexion = new PDO("mysql:host=$host;dbname=$dbName", $user, $pass);
+    $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $query  = "INSERT INTO `book` (`isbn`, `title`, `summary`, `publication_year`, `created_at`, `updated_at`) ";
+    $query .= "VALUES (:isbn, :title, :summary, :publicationYear, :createdAt, :updatedAt)";
+
+    $queryParams = [
+        ':isbn' => $isbn,
+        ':title' => $title,
+        ':summary' => $summary,
+        ':publicationYear' => $publicationYear,
+        ':createdAt' => $createdAt,
+        ':updatedAt'=> $updatedAt,
+    ];
+
+    $statement = $connexion->prepare($query);
+
+    if ($statement->execute($queryParams)) {
+        $successes[] = 'Le nouveau livre a bien été enregistré.';
+    } else {
+        $errors[] = "Une erreur s'est produite lors de l'enregistrement du livre en base de données : veuillez contacter l'administrateur du site.";
+    }
+}
+
+/**
+ * ******************** [2-B] Submitted form is not valid (some errors occured)
+ */
+
+if (count($errors) !== 0) {
+    $errorMsg = "<ul>";
+    foreach ($errors as $error) {
+        $errorMsg .= "<li>$error</li>";
+    }
+    $errorMsg .= "</ul>";
+    echo $errorMsg;
+} else { //... or everything is OK
+    $successMsg = "<ul>";
+    foreach ($successes as $success) {
+        $successMsg .= "<li>$success</li>";
+    }
+    $successMsg .= "</ul>";
+    echo $successMsg;
 }
 
 include_once "./partials/bottom.php";
