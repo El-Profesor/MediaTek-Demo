@@ -9,7 +9,7 @@
     <!-- Pico CSS stylesheet main file -->
     <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" rel="stylesheet">
     <!-- Light Icons stylesheet main file -->
-    <link href="https://unpkg.com/light-icons/dist/light-icon.css" rel="stylesheet">
+    <link href="./vendor/light_icons/dist/light-icon.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="./assets/css/style.css" rel="stylesheet">
 </head>

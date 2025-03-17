@@ -52,7 +52,37 @@ footer>p {
 }
 
 .main-content {
-  width: 80%;
-  margin-left: 5%;
-  padding: 20px 0;
+  width: 95%;
+  margin: 0 2.5%;
+  padding: var(--pico-spacing) 0;
+}
+
+.title-space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--pico-spacing);
+}
+
+.form-inline {
+  width: 25%;
+  display: flex;
+}
+
+fieldset[role=group] > button {
+  border: none;
+}
+
+td.book-cover img {
+  max-width: 250px;
+}
+
+.text-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }

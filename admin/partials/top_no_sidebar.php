@@ -12,14 +12,6 @@
     <link href="../vendor/picocss/pico.colors.min.css" rel="stylesheet">
     <!-- Light Icons stylesheet main file -->
     <link href="../vendor/light_icons/dist/light-icon.css" rel="stylesheet">
-    <!-- flatpickr stylesheet main file -->
-    <link href="../vendor/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-    <!-- flatpickr stylesheet dark theme file -->
-    <link href="../vendor/flatpickr/dist/themes/dark.css" rel="stylesheet">
-    <!-- flatpickr JS main file -->
-    <script src="../vendor/flatpickr/dist/flatpickr.min.js" defer></script>
-    <!-- flatpickr French locale file -->
-    <script src="../vendor/flatpickr/dist/l10n/fr.js" defer></script>
     <!-- Custom styles for this template -->
     <link href="../assets/css/dashboard.css" rel="stylesheet">
 </head>
@@ -29,13 +21,8 @@
     <!-- HEADER -->
     <header id="admin-header">
         <h1>MediaTek - Dashboard</h1>
-        <?php
-
-        include_once "sidebar.php";
-
-        ?>
     </header>
 
     <!-- MAIN -->
-    <main id="admin-main">
+    <main id="admin-main" class="no-sidebar">
         <div class="main-content"> <!-- MAIN-CONTENT : START -->
