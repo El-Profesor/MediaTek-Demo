@@ -3,7 +3,7 @@
 include_once "./partials/top.php";
 
 ?>
-<div class="table-top">
+<div class="title-space-between">
     <h4>Liste des livres</h4>
     <a href="book_new_form.php" title="Ajouter un nouveau livre" role="button"><i class="light-icon-circle-plus"></i>Nouveau livre</a>
 </div>

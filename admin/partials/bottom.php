@@ -2,10 +2,13 @@
     </main>
 
     <!-- FOOTER -->
-    <footer>
+    <footer id="admin-footer">
         <p>MediaTek</p>
     </footer>
 
+    <script defer>
+        const dialog = document.querySelector("dialog");
+    </script>
 </body>
 
 </html>

@@ -4,21 +4,21 @@
   box-sizing: border-box;
 }
 
-body>footer,
-body>header,
-body>main {
+body>footer#admin-footer,
+body>header#admin-header,
+body>footer#admin-footer {
   padding-block: 0;
 }
 
-header,
-footer {
+header#admin-header,
+footer#admin-footer {
   background-color: var(--pico-form-element-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-header {
+header#admin-header {
   position: fixed;
   top: 0;
   left: 0;
@@ -27,28 +27,37 @@ header {
   border-bottom: 1px solid var(--pico-form-element-border-color);
 }
 
-header>h1 {
+header#admin-header>h1 {
   margin: 0;
 }
 
-main {
+main#admin-main {
   width: calc(100% - 10%);
   height: calc(100vh - 50px - 100px);
   margin: 100px 0 0 10%;
   overflow-y: scroll;
 }
 
-footer {
+main#admin-main.no-sidebar {
+  width: 100%;
+  margin-left: 0;
+}
+
+main#admin-main:has(.login-form) {
+  display: flex;
+  align-items: center;
+}
+
+footer#admin-footer {
   height: 50px;
   width: 100%;
   border-top: 1px solid var(--pico-form-element-border-color);
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 1000;
 }
 
-footer>p {
+footer#admin-footer>p {
   margin: 0;
 }
 
@@ -84,12 +93,12 @@ aside nav li a i {
 .main-content {
   width: 95%;
   margin: 0 2.5%;
-  padding: 20px 0;
+  padding: var(--pico-spacing) 0;
 }
 
 i[role=button] {
   color: white;
-  padding: .25em;
+  padding: calc(var(--pico-spacing) * .25);
   border: none;
 }
 
@@ -107,7 +116,7 @@ i[class=light-icon-trash] {
 
 a:has(i[role=button]) {
   text-decoration: none;
-  margin-left: .25em;
+  margin-left: calc(var(--pico-spacing) * .25);
 }
 
 .form-container {
@@ -115,23 +124,104 @@ a:has(i[role=button]) {
   margin: 0 auto;
 }
 
-.table-top {
+.form-container:has(.login-form) {
+  width: 33%;
+  padding: var(--pico-spacing);
+  border: 1px solid var(--pico-form-element-border-color);
+}
+
+.form-container:has(.login-form) h4 {
+  text-align: center;
+}
+
+.title-space-between {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: var(--pico-spacing);
 }
 
-.table-top a[role=button] {
+.title-space-between h4 {
+  margin-bottom: 0;
+}
+
+.title-space-between a[role=button] {
   display: flex;
   align-items: end;
-  padding: .25em;
+  padding: calc(var(--pico-spacing) * .25);
 }
 
-.table-top a[role=button] i {
-  margin-right: .25em;
+.title-space-between a[role=button] i {
+  margin-right: calc(var(--pico-spacing) * .25);
+}
+
+div.form-block-radio {
+  margin-bottom: var(--pico-spacing);
+}
+
+div.form-block-radio>p {
+  margin-bottom: calc(var(--pico-spacing) * .375)
 }
 
 pre {
-  padding: 0.5em;
+  padding: calc(var(--pico-spacing) * .5);
+}
+
+td.book-cover img {
+  max-width: 150px;
+}
+
+.text-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+label:has(+ *:required)::after {
+  content: '*';
+  vertical-align: super;
+  font-size: calc(var(--pico-spacing) * .75);
+  color: var(--pico-color-pink-650);
+}
+
+.login-form>p {
+  text-align: center;
+}
+
+i[class^='light-'],
+[class*=' light-'] {
+  vertical-align: bottom;
+}
+
+.tooltip-wrapper {
+  position: relative;
+  font-size: calc(var(--pico-spacing) * .75);
+}
+
+.tooltip-wrapper ul {
+  margin-left: var(--pico-spacing);
+  margin-bottom: 0;
+}
+
+[role="tooltip"] {
+  display: none;
+  position: absolute;
+  top: calc(var(--pico-spacing) * -1);
+  left: 0;
+  background: black;
+  color: white;
+}
+
+[aria-describedby]:hover + .tooltip-wrapper > [role="tooltip"],
+[aria-describedby]:focus + .tooltip-wrapper > [role="tooltip"] {
+  display: block;
+}
+
+input[type=submit].warning-action {
+  background-color: var(--pico-color-pink-650);
+  border-color: var(--pico-color-pink-650);
 }

@@ -14,7 +14,7 @@ $successes = [];
 if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
     if (isset($_GET['title']) && trim($_GET['title']) !== '') { // Required field value
         // OK
-        $title = $_GET['title'];
+        $title = trim($_GET['title']);
         $titleLen = strlen($title);
         if ($titleLen < 2 || $titleLen > 150) { // Format check
             // KO
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
     }
 
     if (isset($_GET['isbn']) && trim($_GET['isbn']) !== '') { // Required field value
-        $isbn = $_GET['isbn'];
+        $isbn = trim($_GET['isbn']);
         if (!preg_match($validPatterns['isbn'], $isbn)) { // Format check
             // KO
             $errors[] = "Le champ 'ISBN' doit contenir exactement 13 chiffres.";
@@ -36,17 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
 
     if (isset($_GET['summary']) && trim($_GET['summary']) !== '') { // Not required field value but essential test needed
         // OK
-        $summary = $_GET['summary'];
+        $summary = trim($_GET['summary']);
         $summaryLen = strlen($summary);
         if ($summaryLen > 65535) { // Format check
             // KO
-            $errors[] = "Le champ 'Résumé' doit contenir au plus 65535 caractères.";
+            $errors[] = "Le champ 'Résumé' ne doit pas excéder 65535 caractères.";
         }
+    } else {
+        $summary = '';
     }
 
     if (isset($_GET['publication_year']) && trim($_GET['publication_year']) !== '') { // Required field value
         // OK
-        $publicationYear = $_GET['publication_year'];
+        $publicationYear = trim($_GET['publication_year']);
         if (!preg_match($validPatterns['year'], $publicationYear)) { // Format check
             // KO
             $errors[] = "Le champ 'Année de publication' doit être au format YYYY (ex. : 1997).";
@@ -55,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
         $errors[] = "Le champ 'Année de publication' est obligatoire. Merci de saisir une valeur.";
     }
 } else { // KO
-    // "405 - Method Not Allowed" error processing
+    // "405 - Method Not Allowed" error handling
     header('Location: ../405.php');
     exit;
 }
@@ -65,9 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
  */
 
 if (count($errors) === 0) {
-    // Note: escaping (see below) is unecessary as we later use a prepared statement
+    // TODO: Escaping (addslashes()) is unecessary as we later use a prepared statement
     $title = addslashes(htmlspecialchars($title, ENT_NOQUOTES | ENT_SUBSTITUTE));
-    // FIXME: Check if ISBN does not exists
+    // FIXME: Check if ISBN exists
     $isbn = addslashes(htmlspecialchars($isbn, ENT_NOQUOTES | ENT_SUBSTITUTE));
     $summary = addslashes(htmlspecialchars($summary, ENT_NOQUOTES | ENT_SUBSTITUTE));
     $publicationYear = addslashes(htmlspecialchars($publicationYear, ENT_NOQUOTES | ENT_SUBSTITUTE));
@@ -84,8 +86,8 @@ if (count($errors) === 0) {
     $user = 'mentor'; // Your MySQL user username
     $pass = 'superMentor'; // Your MySQL user password
 
-    $connexion = new PDO("mysql:host=$host;dbname=$dbName", $user, $pass);
-    $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $connection = new PDO("mysql:host=$host;dbname=$dbName", $user, $pass);
+    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $query  = "INSERT INTO `book` (`isbn`, `title`, `summary`, `publication_year`, `created_at`, `updated_at`) ";
     $query .= "VALUES (:isbn, :title, :summary, :publicationYear, :createdAt, :updatedAt)";
@@ -99,13 +101,15 @@ if (count($errors) === 0) {
         ':updatedAt'=> $updatedAt,
     ];
 
-    $statement = $connexion->prepare($query);
+    $statement = $connection->prepare($query);
 
     if ($statement->execute($queryParams)) {
         $successes[] = 'Le nouveau livre a bien été enregistré.';
     } else {
         $errors[] = "Une erreur s'est produite lors de l'enregistrement du livre en base de données : veuillez contacter l'administrateur du site.";
     }
+
+    $connection = null;
 }
 
 /**
