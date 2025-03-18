@@ -1,0 +1,5 @@
+----------
+At: 18/03/2025 06:22:13
+To: john.doe@mailbox.com
+Subject: Verification Code
+Content: 653298
