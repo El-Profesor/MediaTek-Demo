@@ -51,6 +51,8 @@ $successes = [];
         if (!preg_match($validPatterns['email'], $email)) { // Format check
             // KO
             $errors[] = "Le champ 'Email' doit respecter le format d'une email (ex. : john.doe@mailbox.com).";
+        } else {
+            // FIXME: Check if email already exists in database
         }
     } else { // KO
         $errors[] = "Le champ 'Email' est obligatoire. Merci de saisir une valeur.";
