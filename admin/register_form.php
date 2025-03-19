@@ -37,9 +37,8 @@ include_once "./partials/top.php";
                         <li>Doit inclure au moins une lettre majuscule</li>
                         <li>Doit inclure au moins une lettre minuscule</li>
                         <li>Doit contenir au moins un chiffre</li>
-                        <li>Doit inclure au moins un caractère spécial (@, #, $, etc.)</li>
-                        <li>Ne doit pas contenir d'espaces</li>
-                        <li>Ne doit pas être identique à votre nom d'utilisateur</li>
+                        <li>Doit inclure au moins un caractère spécial (!, ?, @, #, $, %, ^, &, *)</li>
+                        <li>Ne doit pas contenir d'espace</li>
                     </ul>
                 </article>
             </div>
