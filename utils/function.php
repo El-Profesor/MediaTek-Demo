@@ -1,6 +1,14 @@
 <?php
 
-function fakeMailSend($to, $subject, $content, $filePath="../public/mails/")
+/**
+ * USAGE
+ * 
+ * $to = "john.doe@mailbox.com";
+ * $subject = "Verification Code";
+ * $content = "653298";
+ * fakeMailSend($to, $subject, $content);
+ */
+function fakeMailSend($to, $subject, $content, $filePath = "../public/mails/")
 {
     if (!file_exists($filePath)) {
         mkdir($filePath, 0755, true);
@@ -23,11 +31,21 @@ function fakeMailSend($to, $subject, $content, $filePath="../public/mails/")
     return true;
 }
 
-/**
- * USAGE
- * 
- * $to = "john.doe@mailbox.com";
- * $subject = "Verification Code";
- * $content = "653298";
- * fakeMailSend($to, $subject, $content);
- */
+function startSecureSession(bool $https = false)
+{
+    $sessionId = bin2hex(random_bytes(32)); // Generate a custom strong ID
+    session_id($sessionId); // Session custom strong ID setting
+
+    session_set_cookie_params([
+        'httponly' => true, // Limit session cookies access to HTTP (vs JavaScript...)
+        'secure' => $https, // Limit session cookies on HTTPS
+    ]);
+
+    ini_set('session.gc_maxlifetime', 1800); // Server-side session lifetime in seconds
+    ini_set('session.cookie_lifetime', 1800); // Client-side session cookies lifetime in seconds
+
+    ini_set('session.gc_probability', 1); // See: https://www.php.net/manual/en/session.configuration.php#ini.session.gc-probability
+    ini_set('session.gc_divisor', 100); // See: https://www.php.net/manual/en/session.configuration.php#ini.session.gc-divisor
+
+    session_start(); // Finally, start custom session
+}

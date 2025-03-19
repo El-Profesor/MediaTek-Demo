@@ -192,8 +192,8 @@ label:has(+ *:required)::after {
   text-align: center;
 }
 
-i[class^='light-'],
-[class*=' light-'] {
+body :not(a) > i[class^='light-'],
+body :not(a) > i[class*=' light-'] {
   vertical-align: bottom;
 }
 
