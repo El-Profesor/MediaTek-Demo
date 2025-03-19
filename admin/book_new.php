@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { // Is method allowed ?
 if (count($errors) === 0) {
     // TODO: Escaping (addslashes()) is unecessary as we later use a prepared statement
     $title = addslashes(htmlspecialchars($title, ENT_NOQUOTES | ENT_SUBSTITUTE));
-    // FIXME: Check if ISBN exists
+    // FIXME: Check if the ISBN already exists in database
     $isbn = addslashes(htmlspecialchars($isbn, ENT_NOQUOTES | ENT_SUBSTITUTE));
     $summary = addslashes(htmlspecialchars($summary, ENT_NOQUOTES | ENT_SUBSTITUTE));
     $publicationYear = addslashes(htmlspecialchars($publicationYear, ENT_NOQUOTES | ENT_SUBSTITUTE));
@@ -90,15 +90,15 @@ if (count($errors) === 0) {
     $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $query  = "INSERT INTO `book` (`isbn`, `title`, `summary`, `publication_year`, `created_at`, `updated_at`) ";
-    $query .= "VALUES (:isbn, :title, :summary, :publicationYear, :createdAt, :updatedAt)";
+    $query .= "VALUES (:isbn, :title, :summary, :publication_year, :created_at, :updated_at)";
 
     $queryParams = [
         ':isbn' => $isbn,
         ':title' => $title,
         ':summary' => $summary,
-        ':publicationYear' => $publicationYear,
-        ':createdAt' => $createdAt,
-        ':updatedAt'=> $updatedAt,
+        ':publication_year' => $publicationYear,
+        ':created_at' => $createdAt,
+        ':updated_at'=> $updatedAt,
     ];
 
     $statement = $connection->prepare($query);
