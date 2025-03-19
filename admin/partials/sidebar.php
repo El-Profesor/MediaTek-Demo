@@ -3,7 +3,7 @@
                 <ul>
                     <li><a href="./" title="Page principale du dashboard "><i class="light-icon-dashboard"></i> Dashboard</a></li>
                     <li><a href="./book_index.php" title="Gestion des livres"><i class="light-icon-book"></i> Livres</a></li>
-                    <li><a href="#" title="Gestion des illustrations"><i class="light-icon-photo"></i> Illustrations</a></li>
+                    <li><a href="./illustration_index.php" title="Gestion des illustrations"><i class="light-icon-photo"></i> Illustrations</a></li>
                     <li><a href="#" title="Gestion des auteurs"><i class="light-icon-users"></i> Auteurs</a></li>
                     <li><a href="#" title="Gestion des catégories"><i class="light-icon-sitemap"></i> Catégories</a></li>
                     <li><a href="#" title="Gestion des technologies"><i class="light-icon-tools"></i> Technologies</a></li>
