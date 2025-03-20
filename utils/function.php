@@ -49,3 +49,10 @@ function startSecureSession(bool $https = false)
 
     session_start(); // Finally, start custom session
 }
+
+function digitsCode(int $length = 6) {
+    $limit = str_repeat('9', $length);
+    $digitsCode = sprintf("%0{$length}d",rand(1,(int) $limit));
+
+    return $digitsCode;
+}

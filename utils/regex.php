@@ -13,4 +13,5 @@ $validPatterns = array(
     "zip_code"        => "/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/",
     "isbn"            => "/^[0-9]{13}$/",
     "year"            => "/^[0-9]{4}$/", // TODO: Refine this regex
+    "six_digits_code" => "/^[0-9]{6}$/", // TODO: Refine this regex
 );
