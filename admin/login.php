@@ -78,11 +78,16 @@ if (count($errors) === 0) {
         if (password_verify($password, $user['password'])) {
             $firstName = $user['first_name'];
             $lastName = $user['last_name'];
-            
+
+            $sixDigitsCode = digitsCode();
+
             $_SESSION['is_logged'] = true;
+            $_SESSION['mfa_validation'] = $sixDigitsCode;
             $_SESSION['user'] = ['first_name' => $firstName, 'last_name' => $lastName];
 
-            $successes[] = "Bonjour $firstName $lastName. Vous êtes connecté.";
+            fakeMailSend("$firstName $lastName", "MFA Validation", $sixDigitsCode);
+
+            $successes[] = "Authentification réussie";
         } else {
             $errors[] = "Email ou mot de passe incorrect : veuillez tenter de vous connecter de nouveau.";
         }
@@ -92,22 +97,6 @@ if (count($errors) === 0) {
 
     $connection = null;
 }
-
-?>
-<!-- <div class="form-container">
-    <h4>Code secret - MFA</h4>
-    <form class="login-form" action="login_mfa.php" method="post" novalidate="">
-        <div class="form-block">
-            <label for="secret_code">Code secret reçu par mail</label>
-            <input type="number" id="secret_code" name="secret_code" placeholder="Votre code secret à 6 chiffres" required="">
-        </div>
-
-        <p><a href="login_mfa.php" alt="Recevoir un nouveau code secret"><i class="light-icon-refresh"></i> Recevoir un nouveau code secret ?</a></p>
-
-        <input type="submit" name="login_mfa_submit" value="Confirmer le code secret">
-    </form>
-</div> -->
-<?php
 
 /**
  * ******************** [2-B] Submitted form is not valid (some errors occured)
@@ -126,11 +115,28 @@ if (count($errors) === 0) {
         $successMsg .= "<li>$success</li>";
     }
     $successMsg .= "</ul>";
-    echo $successMsg;
 
-    echo '<pre>';
-    var_dump($_SESSION);
-    echo '</pre>';
+    // echo '<pre>';
+    // var_dump($_SESSION);
+    // echo '</pre>';
+
+?>
+<?= $successMsg ?>
+<div class="form-container">
+    <h4>Code secret - MFA</h4>
+    <form class="login-form" action="login_mfa.php" method="post" novalidate="">
+        <div class="form-block">
+            <label for="secret_code">Code secret reçu par mail</label>
+            <input type="number" id="secret-code" name="secret_code" placeholder="Votre code secret à 6 chiffres" required="">
+        </div>
+
+        <p><a href="login_mfa.php" alt="Recevoir un nouveau code secret"><i class="light-icon-refresh"></i> Recevoir un nouveau code secret ?</a></p>
+
+        <input type="submit" name="login_mfa_submit" value="Confirmer le code secret">
+    </form>
+</div>
+<?php
+
 }
 
 include_once "./partials/bottom.php";
