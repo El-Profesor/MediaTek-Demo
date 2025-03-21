@@ -47,5 +47,29 @@ function startSecureSession(bool $https = false)
     ini_set('session.gc_probability', 1); // See: https://www.php.net/manual/en/session.configuration.php#ini.session.gc-probability
     ini_set('session.gc_divisor', 100); // See: https://www.php.net/manual/en/session.configuration.php#ini.session.gc-divisor
 
-    session_start(); // Finally, start custom session
+    session_start(); // Finally, start customized session
+}
+
+function digitsCode(int $length = 6) {
+    $limit = str_repeat('9', $length);
+    $digitsCode = sprintf("%0{$length}d",rand(1,(int) $limit));
+
+    return $digitsCode;
+}
+
+function prettyDump($var) {
+    ini_set("highlight.comment", "#6a9955");
+    ini_set("highlight.default", "#dcdcaa");
+    // ini_set("highlight.html", "#808080");
+    ini_set("highlight.keyword", "#569cd6; font-weight: bold");
+    ini_set("highlight.string", "#ce9178");
+    
+    ob_start();
+    var_dump($var);
+    $dumpedVar = ob_get_clean();
+    
+    $phpOpenTag = '<span style="color: ' . ini_get("highlight.default") . '">&lt;?php </span>';
+    $highlightedVar = str_replace($phpOpenTag, '', highlight_string("<?php " . $dumpedVar, true));
+    
+    echo $highlightedVar;
 }

@@ -4,7 +4,11 @@
 
 ### Validation des données saisies
 
-Documentation : [PHP: Fonctions sur les chaînes de caractères - Manual](https://www.php.net/manual/fr/ref.strings.php)
+#### Documentation
+
+- [PHP: Fonctions sur les chaînes de caractères - Manual](https://www.php.net/manual/fr/ref.strings.php)
+
+#### Éléments additionnels
 
 1. Méthode de soumission des données
     - `$_SERVER['REQUEST_METHOD']`
@@ -28,3 +32,17 @@ Documentation : [PHP: Fonctions sur les chaînes de caractères - Manual](https:
         - Dimensions (hauteur × largeur) : `getimagesize()` et/ou classe `finfo`
         - Nom du fichier (ex. : nombre de caractères min. et max.) : `strlen()`
     - Gestion de l'erreur correspondante (redirection, code de statut HTTP)
+
+## 02 - Contrôle d'accès
+
+### Authentification
+
+#### Documentation
+
+- [PHP Regular Expressions | W3Schools](https://www.w3schools.com/php/php_regex.asp)
+- [Hachage des mots de passe de manière sûre et sécurisée | PHP Manual](https://www.php.net/manual/fr/faq.passwords.php)
+- [How to Secure hash and salt for PHP passwords | by Mrityunjay Singh | Medium](https://medium.com/@mrityunjay.webmaster/how-to-secure-hash-and-salt-for-php-passwords-54f1c9d268a6)
+
+#### Éléments additionnels
+
+1. *À venir si besoin*
