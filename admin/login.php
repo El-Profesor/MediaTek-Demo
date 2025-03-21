@@ -116,10 +116,6 @@ if (count($errors) === 0) {
     }
     $successMsg .= "</ul>";
 
-    // echo '<pre>';
-    // var_dump($_SESSION);
-    // echo '</pre>';
-
 ?>
 <?= $successMsg ?>
 <div class="form-container">
@@ -138,5 +134,7 @@ if (count($errors) === 0) {
 <?php
 
 }
+
+// prettyDump($_SESSION);
 
 include_once "./partials/bottom.php";
