@@ -68,27 +68,148 @@ if (count($errors) === 0) {
     $statement = $connection->prepare($query);
 
     if ($statement->execute($queryParams) && $statement->fetchColumn() !== 0) { // The user exists
-        $query = "SELECT `last_name`, `first_name`, `password` FROM `user` WHERE `email` = :email";
+        $query = "SELECT `id`, `last_name`, `first_name`, `password`, `locked_at` FROM `user` WHERE `email` = :email";
 
         $statement = $connection->prepare($query);
         $statement->execute($queryParams);
 
         $user = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if (password_verify($password, $user['password'])) {
-            $firstName = $user['first_name'];
-            $lastName = $user['last_name'];
+        $password = $user['password'];
+        $lockedAt = $user['locked_at'];
+        $userId = $user['id'];
 
-            $sixDigitsCode = digitsCode();
+        if (!is_null($lockedAt)) { // Account temporary locked
+            $now = time();
+            $lockedAccountDuration = ($now - strtotime($lockedAt)) / 60;
+            $lockedAt = DateTime::createFromFormat('Y-m-d H:i:s', $lockedAt);
+            $errors[] = "DEBUG: Compte suspendu depuis $lockedAccountDuration minutes.";
+            if ($lockedAccountDuration < 120) { // Locked duration of 2 hours
+                $lockedUntil = $lockedAt->modify('+120 minutes')->format('d/m/Y à H:i:s');
+                $errors[] = "Suite à une activité suspecte, votre compte est suspendu jusqu'au $lockedUntil.";
+            } else { // Unlock account
+                $query = "UPDATE `user` SET `locked_at` = :locked_at WHERE `id` = :user_id";
 
-            $_SESSION['is_logged'] = true;
-            $_SESSION['mfa_validation'] = $sixDigitsCode;
-            $_SESSION['user'] = ['first_name' => $firstName, 'last_name' => $lastName];
+                $queryParams = [
+                    ':locked_at' => NULL,
+                    ':user_id' => $userId,
+                ];
 
-            fakeMailSend("$firstName $lastName", "MFA Validation", $sixDigitsCode);
+                $statement = $connection->prepare($query);
 
-            $successes[] = "Authentification réussie";
-        } else {
+                if ($statement->execute($queryParams) && $statement->rowCount() !== 0) {
+                    // Account unlocked
+                    // TODO: At this point, the user should be able to login
+                } else {
+                    $errors[] = "Une erreur s'est produite lors de la connexion : veuillez contacter l'administrateur du site.";
+                }
+            }
+        } else { // Account not locked
+            if (password_verify($password, $user['password'])) {
+                $firstName = $user['first_name'];
+                $lastName = $user['last_name'];
+
+                $sixDigitsCode = digitsCode();
+
+                $_SESSION['is_logged'] = true;
+                $_SESSION['mfa_validation'] = $sixDigitsCode;
+                $_SESSION['user'] = ['first_name' => $firstName, 'last_name' => $lastName];
+
+                fakeMailSend("$firstName $lastName", "MFA Validation", $sixDigitsCode);
+
+                $successes[] = "Authentification réussie";
+            } else { // Authentication failure: check for an active suspicious activity (X failed attempts in less than Y seconds)
+                $query = "SELECT COUNT(*) FROM `login_attempt` WHERE `user_id` = :user_id AND `is_active` = TRUE";
+
+                $queryParams = [
+                    ':user_id' => $userId,
+                ];
+
+                $statement = $connection->prepare($query);
+
+                if ($statement->execute($queryParams) && $statement->fetchColumn() !== 0) { // At least one attempt already exists
+                    $query = "SELECT `id`, `attempts_counter`, `first_attempted_at` FROM `login_attempt` WHERE `user_id` = :user_id AND `is_active` = TRUE";
+
+                    $queryParams = [
+                        ':user_id' => $userId,
+                    ];
+
+                    $statement = $connection->prepare($query);
+                    $statement->execute($queryParams);
+
+                    $loginAttempt = $statement->fetch(PDO::FETCH_ASSOC);
+
+                    $attemptId = $loginAttempt['id'];
+                    $attemptsCounter = (int)$loginAttempt['attempts_counter'];
+                    $now = time();
+                    $attemptDuration = $now - strtotime($loginAttempt['first_attempted_at']);
+                    $errors[] = "DEBUG: Période de tentative de $attemptDuration secondes.";
+                    if ($attemptDuration < 30 && $attemptsCounter < 3) {
+                        $query = "UPDATE `login_attempt` SET `attempts_counter` = (`attempts_counter` + 1) WHERE `id` = :attempt_id";
+
+                        $queryParams = [
+                            ':attempt_id' => $attemptId,
+                        ];
+
+                        $statement = $connection->prepare($query);
+
+                        if ($statement->execute($queryParams) && $statement->rowCount() !== 0) {
+
+                        } else {
+                            $errors[] = "Une erreur s'est produite lors de la connexion : veuillez contacter l'administrateur du site.";
+                        }
+                    } else {
+                        // TODO: The following two queries should be executed within a single transaction
+                        $query = "UPDATE `login_attempt` SET `is_active` = FALSE WHERE `id` = :attempt_id";
+
+                        $queryParams = [
+                            ':attempt_id' => $attemptId,
+                        ];
+
+                        $statement = $connection->prepare($query);
+
+                        if ($statement->execute($queryParams) && $statement->rowCount() !== 0) {
+
+                            if ($attemptsCounter >= 3) {
+                                $query = "UPDATE `user` SET `locked_at` = :locked_at WHERE `id` = :user_id";
+
+                                $queryParams = [
+                                    ':locked_at' => (new DateTime())->format('Y-m-d H:i:s'),
+                                    ':user_id' => $userId,
+                                ];
+
+                                $statement = $connection->prepare($query);
+
+                                if ($statement->execute($queryParams) && $statement->rowCount() !== 0) {
+                                    // Locked account
+                                } else {
+                                    $errors[] = "Une erreur s'est produite lors de la connexion : veuillez contacter l'administrateur du site.";
+                                }
+                            }
+                        } else {
+                            $errors[] = "Une erreur s'est produite lors de la connexion : veuillez contacter l'administrateur du site.";
+                        }
+                    }
+                } else { // First attempt
+                    $query = "INSERT INTO `login_attempt` VALUES (NULL, :user_id, :server_env_info, :attempts_counter, :first_attempted_at, :is_active) ";
+
+                    $queryParams = [
+                        ':user_id' => $userId,
+                        ':server_env_info' => serialize($_SERVER),
+                        ':attempts_counter' => 1,
+                        ':first_attempted_at' => (new DateTime())->format('Y-m-d H:i:s'),
+                        ':is_active' => TRUE,
+                    ];
+
+                    $statement = $connection->prepare($query);
+
+                    if ($statement->execute($queryParams) && $statement->rowCount() !== 0) {
+
+                    } else {
+                        $errors[] = "HERE : Une erreur s'est produite lors de la connexion : veuillez contacter l'administrateur du site.";
+                    }
+                }
+            }
             $errors[] = "Email ou mot de passe incorrect : veuillez tenter de vous connecter de nouveau.";
         }
     } else {
@@ -102,7 +223,7 @@ if (count($errors) === 0) {
  * ******************** [2-B] Submitted form is not valid (some errors occured)
  */
 
- if (count($errors) !== 0) {
+if (count($errors) !== 0) {
     $errorMsg = "<ul>";
     foreach ($errors as $error) {
         $errorMsg .= "<li>$error</li>";
@@ -116,22 +237,26 @@ if (count($errors) === 0) {
     }
     $successMsg .= "</ul>";
 
-?>
-<?= $successMsg ?>
-<div class="form-container">
-    <h4>Code secret - MFA</h4>
-    <form class="login-form" action="login_mfa.php" method="post" novalidate="">
-        <div class="form-block">
-            <label for="secret_code">Code secret reçu par mail</label>
-            <input type="number" id="secret-code" name="secret_code" placeholder="Votre code secret à 6 chiffres" required="">
-        </div>
+    ?>
+    <?= $successMsg ?>
+    <div class="form-container">
+        <h4>Code secret - MFA</h4>
+        <form class="login-form" action="login_mfa.php" method="post" novalidate="">
+            <div class="form-block">
+                <label for="secret_code">Code secret reçu par mail</label>
+                <input type="number" id="secret-code" name="secret_code"
+                       placeholder="Votre code secret à 6 chiffres"
+                       required="">
+            </div>
 
-        <p><a href="login_mfa.php" alt="Recevoir un nouveau code secret"><i class="light-icon-refresh"></i> Recevoir un nouveau code secret ?</a></p>
+            <p><a href="login_mfa.php" alt="Recevoir un nouveau code secret"><i class="light-icon-refresh"></i>
+                    Recevoir
+                    un nouveau code secret ?</a></p>
 
-        <input type="submit" name="login_mfa_submit" value="Confirmer le code secret">
-    </form>
-</div>
-<?php
+            <input type="submit" name="login_mfa_submit" value="Confirmer le code secret">
+        </form>
+    </div>
+    <?php
 
 }
 

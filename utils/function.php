@@ -60,7 +60,7 @@ function digitsCode(int $length = 6) {
 function prettyDump($var) {
     ini_set("highlight.comment", "#6a9955");
     ini_set("highlight.default", "#dcdcaa");
-    // ini_set("highlight.html", "#808080");
+    ini_set("highlight.html", "#da70d6");
     ini_set("highlight.keyword", "#569cd6; font-weight: bold");
     ini_set("highlight.string", "#ce9178");
     
