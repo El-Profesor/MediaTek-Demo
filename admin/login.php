@@ -11,6 +11,8 @@ include_once "./partials/top.php";
 $errors = [];
 $successes = [];
 
+$captchaMsg = '';
+
 /**
  * ******************** [1] Check if submitted form is valid
  */
@@ -81,10 +83,10 @@ if (count($errors) === 0) {
 
         if (!is_null($lockedAt)) { // Account temporary locked
             $now = time();
-            $lockedAccountDuration = ($now - strtotime($lockedAt)) / 60;
+            $lockoutAccountDuration = $now - strtotime($lockedAt);
             $lockedAt = DateTime::createFromFormat('Y-m-d H:i:s', $lockedAt);
-            $errors[] = "DEBUG: Compte suspendu depuis $lockedAccountDuration minutes.";
-            if ($lockedAccountDuration < 120) { // Locked duration of 2 hours
+            $errors[] = "DEBUG: Compte suspendu depuis $lockoutAccountDuration secondes.";
+            if ($lockoutAccountDuration < LOCKOUT_DURATION) {
                 $lockedUntil = $lockedAt->modify('+120 minutes')->format('d/m/Y à H:i:s');
                 $errors[] = "Suite à une activité suspecte, votre compte est suspendu jusqu'au $lockedUntil.";
             } else { // Unlock account
@@ -144,7 +146,7 @@ if (count($errors) === 0) {
                     $now = time();
                     $attemptDuration = $now - strtotime($loginAttempt['first_attempted_at']);
                     $errors[] = "DEBUG: Période de tentative de $attemptDuration secondes.";
-                    if ($attemptDuration < 30 && $attemptsCounter < 3) {
+                    if ($attemptDuration < LOCKOUT_ATTEMPTS_WINDOW && $attemptsCounter < LOCKOUT_ATTEMPTS_NUMBER) { // Increment attempts counter
                         $query = "UPDATE `login_attempt` SET `attempts_counter` = (`attempts_counter` + 1) WHERE `id` = :attempt_id";
 
                         $queryParams = [
@@ -154,7 +156,8 @@ if (count($errors) === 0) {
                         $statement = $connection->prepare($query);
 
                         if ($statement->execute($queryParams) && $statement->rowCount() !== 0) {
-
+                            // OK
+                            $errors[] = $captchaMsg = '<mark>Captcha activé</mark>';
                         } else {
                             $errors[] = "Une erreur s'est produite lors de la connexion : veuillez contacter l'administrateur du site.";
                         }
@@ -169,8 +172,8 @@ if (count($errors) === 0) {
                         $statement = $connection->prepare($query);
 
                         if ($statement->execute($queryParams) && $statement->rowCount() !== 0) {
-
-                            if ($attemptsCounter >= 3) {
+                            // OK
+                            if ($attemptsCounter >= LOCKOUT_ATTEMPTS_NUMBER) { // Maximum attempts reached: locking account
                                 $query = "UPDATE `user` SET `locked_at` = :locked_at WHERE `id` = :user_id";
 
                                 $queryParams = [
