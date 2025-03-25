@@ -1,4 +1,8 @@
-<!doctype html>
+<?php
+
+include("../utils/global_settings.php");
+
+?><!doctype html>
 <html lang="fr" data-theme="dark">
 
 <head>
