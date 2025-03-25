@@ -77,7 +77,7 @@ if (count($errors) === 0) {
 
         $user = $statement->fetch(PDO::FETCH_ASSOC);
 
-        $password = $user['password'];
+        $hashedPassword = $user['password'];
         $lockedAt = $user['locked_at'];
         $userId = $user['id'];
 
@@ -107,7 +107,7 @@ if (count($errors) === 0) {
                 }
             }
         } else { // Account not locked
-            if (password_verify($password, $user['password'])) {
+            if (password_verify($password, $hashedPassword)) {
                 $firstName = $user['first_name'];
                 $lastName = $user['last_name'];
 
@@ -213,7 +213,6 @@ if (count($errors) === 0) {
                     }
                 }
             }
-            $errors[] = "Email ou mot de passe incorrect : veuillez tenter de vous connecter de nouveau.";
         }
     } else {
         $errors[] = "Aucun utilisateur correspondant n'a été trouvé : veuillez tenter de vous connecter de nouveau.";
@@ -263,6 +262,6 @@ if (count($errors) !== 0) {
 
 }
 
-// prettyDump($_SESSION);
+// prettyDump($_SERVER);
 
 include_once "./partials/bottom.php";
