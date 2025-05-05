@@ -7,10 +7,10 @@ Disposer d'un environnement de travail doté :
 2. Du module PHP associé au serveur Web local.
 3. D'un SGBD MySQL ou MariaDB.
 
-Des solutions _all-in-one_ existent telle que :
-- Wampserver (Windows).
-- XAMPP (_cross-platforms_).
-- MAMP (_cross-platforms_).
+Des solutions _all-in-one_ existent :
+- WampServer (Windows) : [WampServer, la plate-forme de développement Web sous Windows - Apache, MySQL, PHP](https://www.wampserver.com/).
+- XAMPP (_cross-platforms_) : [XAMPP Installers and Downloads for Apache Friends](https://www.apachefriends.org/fr/index.html).
+- MAMP (_cross-platforms_) : [MAMP & MAMP PRO - your local web development solution for PHP and WordPress development](https://www.mamp.info/en/windows/).
 
 ## Installation du projet
 
@@ -49,7 +49,7 @@ Dans le code source, ajuster les valeurs par rapport à votre serveur MySQL (plu
 
 ## Modèle Entité-Association Étendu
 
-Ou *« enhanced entity-relationship » diagram* (EER) :
+Ou *« enhanced entity-relationship » diagram* (EER), seules les entités en **bleu** sont à prendre en considération :
 
 ![EER MediaTek](stuff/db/mediatek_full.png "EER MediaTek")
 
