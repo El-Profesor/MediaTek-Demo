@@ -1,57 +1,57 @@
 # MediaTek-Demo
 
-## 01 – Entrées / Sorties
+## Pré-requis
 
-### Documentation
+Disposer d'un environnement de travail doté :
+1. D'un serveur Web local (ex. : Apache).
+2. Du module PHP associé au serveur Web local.
+3. D'un SGBD MySQL ou MariaDB.
 
-- [PHP: Fonctions sur les chaînes de caractères - Manual](https://www.php.net/manual/fr/ref.strings.php)
+Des solutions _all-in-one_ existent telle que :
+- Wampserver (Windows).
+- XAMPP (_cross-platforms_).
+- MAMP (_cross-platforms_).
 
-### Éléments additionnels
+## Installation du projet
 
-1. Méthode de soumission des données
-    - `$_SERVER['REQUEST_METHOD']`
-    - Gestion de l'erreur correspondante (redirection, code de statut HTTP)
-2. Champ requis (obligatoire)
-    - Rappel : les données du formulaire sont récupérées dans un tableau (ici, `$_GET`) de chaînes de caractères (`string`)
-    - `isset($_GET['champ'])`
-    - `trim($_GET['champ']) !== ''`
-    - Gestion de l'erreur correspondante (redirection, code de statut HTTP)  
-3. Spécifications (format des données)
-    - Taille (ex. : nombre de caractères min. et max.) : `strlen()`
-    - Format spécifique (ex. : email, date, etc.) : utilisation des expressions régulières (*regex*)
-    - Gestion de l'erreur correspondante (redirection, code de statut HTTP)
-4. Cas particulier des fichiers uploadés
-    - Rappel : le traitement des fichiers uploadés se fait via un tableau distinct (`$_FILES`)
-    - Réussite ou échec de l'upload : `$_FILES['champ']['error']`
-    - Spécifications (cas d'une image)
-        - Poids du fichier (octets) : `$_FILES['champ']['size']`
-        - Type de fichier (ex. : image) : `getimagesize()` et/ou classe `finfo` 
-        - Format du fichier (ex. : JPEG ou PNG) : `getimagesize()` et/ou classe `finfo` 
-        - Dimensions (hauteur × largeur) : `getimagesize()` et/ou classe `finfo`
-        - Nom du fichier (ex. : nombre de caractères min. et max.) : `strlen()`
-    - Gestion de l'erreur correspondante (redirection, code de statut HTTP)
+### Code source
 
-## 02 - Contrôle d'accès : authentification
+Via la commande `git clone` depuis votre dossier de travail (*document root*), par exemple `www/` ou `htdocs/` selon
+l'environnement serveur utilisé :
 
-### Documentation
+```shell
+git clone git@github.com:El-Profesor/MediaTek-Demo.git mediatek
+```
 
-- [PHP Regular Expressions | W3Schools](https://www.w3schools.com/php/php_regex.asp)
-- [Hachage des mots de passe de manière sûre et sécurisée | PHP Manual](https://www.php.net/manual/fr/faq.passwords.php)
-- [How to Secure hash and salt for PHP passwords | by Mrityunjay Singh | Medium](https://medium.com/@mrityunjay.webmaster/how-to-secure-hash-and-salt-for-php-passwords-54f1c9d268a6)
+**Note :** il est également possible de télécharger le code source du projet sous forme d'une archive au format ZIP.
 
-### Éléments additionnels
+### Base de données associée
 
-1. *À venir si besoin*
+Depuis phpMyAdmin :
 
-## 03 - Contrôle d'accès : autorisations
+1. Création d'une base de données nommée `mediatek` (avec interclassement `utf8mb4_unicode_ci`).
+2. Sélection de la base de données `mediatek` créée.
+3. Via l'onglet **Importer**, import du fichier `mediatek_full.sql` (dossier `stuff/db/`) qui contient un jeu de données.
 
-### Documentation
+Dans le code source, ajuster les valeurs par rapport à votre serveur MySQL (plusieurs scripts PHP sont concernés) :
 
-- *À venir si besoin*
+```php
+ $host = 'localhost';
+ $dbName = 'mediatek';
+ $user = 'mentor'; // Your MySQL user username
+ $pass = 'superMentor'; // Your MySQL user password
+```
 
-### Éléments additionnels
+### Vérification de l'installation
 
-1. *À venir si besoin*
+- *Front-office* : [http://localhost/mediatek/](http://localhost/mediatek/ "Accès au front-office")
+- *Back-office* : [http://localhost/mediatek/admin/](http://localhost/mediatek/admin/ "Accès au back-office")
+
+## Modèle Entité-Association Étendu
+
+Ou *« enhanced entity-relationship » diagram* (EER) :
+
+![EER MediaTek](stuff/db/mediatek_full.png "EER MediaTek")
 
 ## Avertissement
 
