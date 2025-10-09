@@ -18,7 +18,7 @@ include_once "./partials/top.php";
 
         <div class="form-block">
             <label for="birth_date">Votre date de naissance</label>
-            <input type="date" id="birth-date" name="birth_date" placeholder="Date de naissance (ex. : 12-06-2001)" value="" required="">
+            <input type="date" id="birth-date" name="birth_date" placeholder="Date de naissance (ex. : 06-22-2001)" value="" required="">
         </div>
 
         <div class="form-block">
